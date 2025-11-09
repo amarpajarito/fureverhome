@@ -136,9 +136,29 @@
     <p class="text-xl text-[#6C757D] mb-8 leading-relaxed">
       Join our community of dog lovers and make a difference in a dog's life today.
     </p>
+
+    @if (!authService.isAuthenticated()) {
+    <!-- Not logged in -->
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
       <a
-        routerLink="/dogs-public"
+        routerLink="/register"
+        class="inline-flex items-center justify-center space-x-2 px-8 py-4 bg-[#2D6A4F] text-white rounded-lg hover:bg-[#1B4332] transition-colors duration-300 font-semibold text-lg shadow-lg"
+      >
+        <span>Start Adopting Today</span>
+        <lucide-icon [img]="ArrowRight" [size]="20"></lucide-icon>
+      </a>
+      <a
+        routerLink="/contact"
+        class="inline-flex items-center justify-center space-x-2 px-8 py-4 bg-white text-[#2D6A4F] rounded-lg border-2 border-[#2D6A4F] hover:bg-[#2D6A4F] hover:text-white transition-colors duration-300 font-semibold text-lg"
+      >
+        <span>Contact Us</span>
+      </a>
+    </div>
+    } @else {
+    <!-- Logged in -->
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a
+        routerLink="/dogs"
         class="inline-flex items-center justify-center space-x-2 px-8 py-4 bg-[#2D6A4F] text-white rounded-lg hover:bg-[#1B4332] transition-colors duration-300 font-semibold text-lg shadow-lg"
       >
         <span>Browse Available Dogs</span>
@@ -151,5 +171,6 @@
         <span>Contact Us</span>
       </a>
     </div>
+    }
   </div>
 </section>

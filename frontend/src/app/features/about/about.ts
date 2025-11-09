@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import {
@@ -10,6 +10,7 @@ import {
   CheckCircle,
   ArrowRight,
 } from 'lucide-angular';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-about',
@@ -19,6 +20,8 @@ import {
   styleUrl: './about.css',
 })
 export class About {
+  authService = inject(AuthService);
+
   // Icons
   readonly Heart = Heart;
   readonly Target = Target;
