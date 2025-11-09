@@ -1,0 +1,395 @@
+<!-- Loading State -->
+@if (isLoading) {
+<div class="flex justify-center items-center min-h-screen bg-gray-50">
+  <div class="text-center">
+    <div class="inline-block animate-spin rounded-full h-16 w-16 border-b-2 border-[#2D6A4F]"></div>
+    <p class="mt-4 text-gray-600">Loading dog details...</p>
+  </div>
+</div>
+}
+
+<!-- Error State -->
+@if (errorMessage && !isLoading) {
+<div class="min-h-screen bg-gray-50 py-12">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="bg-red-50 border border-red-200 rounded-lg p-8 text-center">
+      <p class="text-red-600 text-lg mb-4">{{ errorMessage }}</p>
+      <button
+        (click)="goBack()"
+        class="px-6 py-3 bg-[#2D6A4F] text-white rounded-lg hover:bg-[#1B4332] transition-colors font-semibold"
+      >
+        Back to Browse Dogs
+      </button>
+    </div>
+  </div>
+</div>
+}
+
+<!-- Dog Detail Content -->
+@if (dog && !isLoading) {
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Back Button -->
+    <button
+      (click)="goBack()"
+      class="flex items-center space-x-2 text-[#2D6A4F] hover:text-[#1B4332] font-medium mb-6 transition-colors"
+    >
+      <lucide-icon [img]="ArrowLeft" [size]="20"></lucide-icon>
+      <span>Back to Browse Dogs</span>
+    </button>
+
+    <!-- Success Message -->
+    @if (submissionSuccess) {
+    <div
+      id="success-message"
+      class="bg-green-50 border-2 border-green-200 rounded-lg p-6 mb-6 animate-fade-in"
+    >
+      <div class="flex items-start space-x-3">
+        <lucide-icon [img]="CheckCircle" [size]="24" class="text-green-600 mt-1"></lucide-icon>
+        <div>
+          <h3 class="text-lg font-semibold text-green-800 mb-2">Application Submitted!</h3>
+          <p class="text-green-700">
+            Your adoption request for <strong>{{ dog.name }}</strong> has been successfully
+            submitted. Our team will review your application and contact you within 2-3 business
+            days.
+          </p>
+          <p class="text-green-700 mt-2">
+            You can track your application status in
+            <a routerLink="/my-requests" class="underline font-semibold">My Requests</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+    }
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      <!-- Dog Image -->
+      <div class="relative h-96 lg:h-[600px] rounded-2xl overflow-hidden shadow-xl">
+        @if (dog.imageUrl) {
+        <img [src]="dog.imageUrl" [alt]="dog.name" class="w-full h-full object-cover" />
+        } @else {
+        <div
+          class="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#2D6A4F] to-[#52B788]"
+        >
+          <lucide-icon [img]="PawPrint" [size]="128" class="text-white opacity-50"></lucide-icon>
+        </div>
+        }
+        <div
+          class="absolute top-4 right-4 bg-[#40916C] text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg"
+        >
+          {{ dog.available ? 'Available' : 'Not Available' }}
+        </div>
+      </div>
+
+      <!-- Dog Information -->
+      <div class="bg-white rounded-2xl shadow-lg p-8">
+        <h1 class="text-4xl font-bold text-[#1B4332] font-['Poppins'] mb-2">{{ dog.name }}</h1>
+        <p class="text-xl text-gray-600 mb-6">{{ dog.breed }}</p>
+
+        <!-- Quick Info Grid -->
+        <div class="grid grid-cols-2 gap-4 mb-6">
+          <div class="flex items-center space-x-3 text-gray-700">
+            <lucide-icon [img]="Calendar" [size]="20" class="text-[#2D6A4F]"></lucide-icon>
+            <div>
+              <p class="text-xs text-gray-500">Age</p>
+              <p class="font-semibold">{{ getAgeLabel(dog.age) }}</p>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-3 text-gray-700">
+            <lucide-icon [img]="User" [size]="20" class="text-[#2D6A4F]"></lucide-icon>
+            <div>
+              <p class="text-xs text-gray-500">Gender</p>
+              <p class="font-semibold">{{ getGenderLabel(dog.gender) }}</p>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-3 text-gray-700 col-span-2">
+            <lucide-icon [img]="Heart" [size]="20" class="text-[#2D6A4F]"></lucide-icon>
+            <div>
+              <p class="text-xs text-gray-500">Health Status</p>
+              <span
+                class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"
+              >
+                {{ dog.healthStatus }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <hr class="my-6 border-gray-200" />
+
+        <!-- Description -->
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold text-[#1B4332] mb-3">About {{ dog.name }}</h3>
+          <p class="text-gray-700 leading-relaxed">{{ dog.description }}</p>
+        </div>
+
+        <!-- Adoption Button -->
+        @if (dog.available && !submissionSuccess && !hasAlreadyApplied) {
+        <button
+          (click)="toggleAdoptionForm()"
+          class="w-full py-4 bg-[#2D6A4F] text-white rounded-lg hover:bg-[#1B4332] transition-all duration-300 font-semibold text-lg shadow-md hover:shadow-xl"
+        >
+          {{ showAdoptionForm ? 'Hide Adoption Form' : 'Apply for Adoption' }}
+        </button>
+        } @else if (hasAlreadyApplied) {
+        <div
+          class="bg-blue-50 border-2 border-blue-200 text-blue-800 py-4 px-6 rounded-lg text-center"
+        >
+          <p class="font-semibold mb-2">✓ Application Submitted</p>
+          <p class="text-sm">
+            You have already applied to adopt <strong>{{ dog.name }}</strong
+            >. Check your
+            <a routerLink="/my-requests" class="underline font-semibold hover:text-blue-900">
+              My Requests
+            </a>
+            page for status updates.
+          </p>
+        </div>
+        } @else if (!dog.available) {
+        <div class="bg-gray-100 text-gray-600 py-4 px-6 rounded-lg text-center font-medium">
+          This dog is no longer available for adoption
+        </div>
+        }
+      </div>
+    </div>
+
+    <!-- Adoption Form -->
+    @if (showAdoptionForm && dog.available && !hasAlreadyApplied) {
+    <div id="adoption-form" class="bg-white rounded-2xl shadow-lg p-8 mb-8 animate-fade-in">
+      <h2 class="text-3xl font-bold text-[#1B4332] font-['Poppins'] mb-2">
+        Adoption Application for {{ dog.name }}
+      </h2>
+      <p class="text-gray-600 mb-6">
+        Please fill out the form below with your information. Our team will review your application
+        and contact you soon.
+      </p>
+
+      <form [formGroup]="adoptionForm" (ngSubmit)="submitAdoptionRequest()">
+        <!-- Personal Information Section -->
+        <div class="mb-8">
+          <h3 class="text-xl font-semibold text-[#1B4332] mb-4 flex items-center space-x-2">
+            <lucide-icon [img]="User" [size]="24" class="text-[#2D6A4F]"></lucide-icon>
+            <span>Personal Information</span>
+          </h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Full Name -->
+            <div>
+              <label for="fullName" class="block text-sm font-medium text-gray-700 mb-2">
+                Full Name <span class="text-red-500">*</span>
+              </label>
+              <input
+                id="fullName"
+                type="text"
+                formControlName="fullName"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D6A4F] focus:border-transparent outline-none transition-all"
+                placeholder="John Doe"
+              />
+              @if (adoptionForm.get('fullName')?.invalid && adoptionForm.get('fullName')?.touched) {
+              <p class="mt-1 text-sm text-red-600">Full name is required</p>
+              }
+            </div>
+
+            <!-- Email -->
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                Email Address <span class="text-red-500">*</span>
+              </label>
+              <input
+                id="email"
+                type="email"
+                formControlName="email"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D6A4F] focus:border-transparent outline-none transition-all"
+                placeholder="john.doe@example.com"
+              />
+              @if (adoptionForm.get('email')?.invalid && adoptionForm.get('email')?.touched) {
+              <p class="mt-1 text-sm text-red-600">Please enter a valid email address</p>
+              }
+            </div>
+
+            <!-- Phone -->
+            <div>
+              <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
+                Phone Number <span class="text-red-500">*</span>
+              </label>
+              <input
+                id="phone"
+                type="tel"
+                formControlName="phone"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D6A4F] focus:border-transparent outline-none transition-all"
+                placeholder="+1 (555) 123-4567"
+              />
+              @if (adoptionForm.get('phone')?.invalid && adoptionForm.get('phone')?.touched) {
+              <p class="mt-1 text-sm text-red-600">Please enter a valid phone number</p>
+              }
+            </div>
+
+            <!-- Address -->
+            <div class="md:col-span-2">
+              <label for="address" class="block text-sm font-medium text-gray-700 mb-2">
+                Home Address <span class="text-red-500">*</span>
+              </label>
+              <input
+                id="address"
+                type="text"
+                formControlName="address"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D6A4F] focus:border-transparent outline-none transition-all"
+                placeholder="123 Main Street, City, State, ZIP"
+              />
+              @if (adoptionForm.get('address')?.invalid && adoptionForm.get('address')?.touched) {
+              <p class="mt-1 text-sm text-red-600">Address is required (minimum 10 characters)</p>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Household Information Section -->
+        <div class="mb-8">
+          <h3 class="text-xl font-semibold text-[#1B4332] mb-4 flex items-center space-x-2">
+            <lucide-icon [img]="Home" [size]="24" class="text-[#2D6A4F]"></lucide-icon>
+            <span>Household Information</span>
+          </h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Occupation -->
+            <div>
+              <label for="occupation" class="block text-sm font-medium text-gray-700 mb-2">
+                Occupation <span class="text-red-500">*</span>
+              </label>
+              <input
+                id="occupation"
+                type="text"
+                formControlName="occupation"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D6A4F] focus:border-transparent outline-none transition-all"
+                placeholder="Software Engineer"
+              />
+              @if (adoptionForm.get('occupation')?.invalid &&
+              adoptionForm.get('occupation')?.touched) {
+              <p class="mt-1 text-sm text-red-600">Occupation is required</p>
+              }
+            </div>
+
+            <!-- Household Members -->
+            <div>
+              <label for="householdMembers" class="block text-sm font-medium text-gray-700 mb-2">
+                Number of Household Members <span class="text-red-500">*</span>
+              </label>
+              <input
+                id="householdMembers"
+                type="number"
+                formControlName="householdMembers"
+                min="1"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D6A4F] focus:border-transparent outline-none transition-all"
+                placeholder="1"
+              />
+              @if (adoptionForm.get('householdMembers')?.invalid &&
+              adoptionForm.get('householdMembers')?.touched) {
+              <p class="mt-1 text-sm text-red-600">Please enter at least 1 member</p>
+              }
+            </div>
+
+            <!-- Has Other Pets -->
+            <div class="md:col-span-2">
+              <label class="flex items-center space-x-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  formControlName="hasOtherPets"
+                  class="w-5 h-5 text-[#2D6A4F] border-gray-300 rounded focus:ring-2 focus:ring-[#2D6A4F]"
+                />
+                <span class="text-sm font-medium text-gray-700">
+                  I currently have other pets at home
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Experience Section -->
+        <div class="mb-8">
+          <h3 class="text-xl font-semibold text-[#1B4332] mb-4 flex items-center space-x-2">
+            <lucide-icon [img]="PawPrint" [size]="24" class="text-[#2D6A4F]"></lucide-icon>
+            <span>Pet Experience & Motivation</span>
+          </h3>
+
+          <div class="space-y-6">
+            <!-- Pet Experience -->
+            <div>
+              <label for="petExperience" class="block text-sm font-medium text-gray-700 mb-2">
+                Pet Care Experience <span class="text-red-500">*</span>
+              </label>
+              <textarea
+                id="petExperience"
+                formControlName="petExperience"
+                rows="4"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D6A4F] focus:border-transparent outline-none transition-all resize-none"
+                placeholder="Please describe your experience with pets (e.g., previous dog ownership, training experience, etc.). Minimum 20 characters."
+              ></textarea>
+              @if (adoptionForm.get('petExperience')?.invalid &&
+              adoptionForm.get('petExperience')?.touched) {
+              <p class="mt-1 text-sm text-red-600">
+                Please describe your pet experience (minimum 20 characters)
+              </p>
+              }
+              <p class="mt-1 text-xs text-gray-500">
+                {{ adoptionForm.get('petExperience')?.value?.length || 0 }} / 20 characters minimum
+              </p>
+            </div>
+
+            <!-- Reason for Adoption -->
+            <div>
+              <label for="reason" class="block text-sm font-medium text-gray-700 mb-2">
+                Why do you want to adopt {{ dog.name }}? <span class="text-red-500">*</span>
+              </label>
+              <textarea
+                id="reason"
+                formControlName="reason"
+                rows="4"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D6A4F] focus:border-transparent outline-none transition-all resize-none"
+                placeholder="Please share your motivation for adopting this dog and how you plan to care for them. Minimum 50 characters."
+              ></textarea>
+              @if (adoptionForm.get('reason')?.invalid && adoptionForm.get('reason')?.touched) {
+              <p class="mt-1 text-sm text-red-600">
+                Please share your reason for adoption (minimum 50 characters)
+              </p>
+              }
+              <p class="mt-1 text-xs text-gray-500">
+                {{ adoptionForm.get('reason')?.value?.length || 0 }} / 50 characters minimum
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex gap-4">
+          <button
+            type="button"
+            (click)="toggleAdoptionForm()"
+            class="flex-1 py-3 px-6 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-semibold"
+            [disabled]="isSubmitting"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="flex-1 py-3 px-6 bg-[#2D6A4F] text-white rounded-lg hover:bg-[#1B4332] transition-all duration-300 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            [disabled]="isSubmitting || adoptionForm.invalid"
+          >
+            @if (isSubmitting) {
+            <span class="flex items-center justify-center space-x-2">
+              <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+              <span>Submitting...</span>
+            </span>
+            } @else {
+            <span>Submit Application</span>
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+    }
+  </div>
+</div>
+}
