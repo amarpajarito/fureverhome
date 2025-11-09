@@ -1,0 +1,302 @@
+<nav class="bg-white shadow-md sticky top-0 z-50 border-b border-gray-100">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <!-- Logo & Brand -->
+      <div class="flex items-center space-x-3">
+        <a routerLink="/" class="flex items-center group">
+          <img src="/logo.svg" alt="FureverHome Logo" class="h-12" />
+        </a>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <div class="hidden md:flex items-center space-x-1">
+        <!-- Public Links (Always Visible) -->
+        <a
+          routerLink="/"
+          routerLinkActive="bg-[#2D6A4F] text-white"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="flex items-center space-x-2 px-4 py-2 rounded-lg text-[#1B4332] hover:bg-[#52B788] hover:text-white transition-all duration-300 font-medium"
+        >
+          <lucide-icon [img]="Home" [size]="18"></lucide-icon>
+          <span>Home</span>
+        </a>
+
+        <a
+          routerLink="/about"
+          routerLinkActive="bg-[#2D6A4F] text-white"
+          class="flex items-center space-x-2 px-4 py-2 rounded-lg text-[#1B4332] hover:bg-[#52B788] hover:text-white transition-all duration-300 font-medium"
+        >
+          <lucide-icon [img]="Info" [size]="18"></lucide-icon>
+          <span>About</span>
+        </a>
+
+        <a
+          [routerLink]="isAuthenticated() ? '/dogs' : '/dogs-public'"
+          routerLinkActive="bg-[#2D6A4F] text-white"
+          class="flex items-center space-x-2 px-4 py-2 rounded-lg text-[#1B4332] hover:bg-[#52B788] hover:text-white transition-all duration-300 font-medium"
+        >
+          <lucide-icon [img]="PawPrint" [size]="18"></lucide-icon>
+          <span>Browse Dogs</span>
+        </a>
+
+        <a
+          routerLink="/contact"
+          routerLinkActive="bg-[#2D6A4F] text-white"
+          class="flex items-center space-x-2 px-4 py-2 rounded-lg text-[#1B4332] hover:bg-[#52B788] hover:text-white transition-all duration-300 font-medium"
+        >
+          <lucide-icon [img]="Mail" [size]="18"></lucide-icon>
+          <span>Contact</span>
+        </a>
+
+        <!-- User Links (Authenticated - Non-Admin) -->
+        @if (isAuthenticated() && !isAdmin()) {
+        <a
+          routerLink="/my-requests"
+          routerLinkActive="bg-[#2D6A4F] text-white"
+          class="flex items-center space-x-2 px-4 py-2 rounded-lg text-[#1B4332] hover:bg-[#52B788] hover:text-white transition-all duration-300 font-medium"
+        >
+          <lucide-icon [img]="Heart" [size]="18"></lucide-icon>
+          <span>My Requests</span>
+        </a>
+        }
+
+        <!-- Admin Links -->
+        @if (isAuthenticated() && isAdmin()) {
+        <a
+          routerLink="/admin/dashboard"
+          routerLinkActive="bg-[#2D6A4F] text-white"
+          class="flex items-center space-x-2 px-4 py-2 rounded-lg text-[#1B4332] hover:bg-[#52B788] hover:text-white transition-all duration-300 font-medium"
+        >
+          <lucide-icon [img]="LayoutDashboard" [size]="18"></lucide-icon>
+          <span>Dashboard</span>
+        </a>
+        <a
+          routerLink="/admin/dogs"
+          routerLinkActive="bg-[#2D6A4F] text-white"
+          class="flex items-center space-x-2 px-4 py-2 rounded-lg text-[#1B4332] hover:bg-[#52B788] hover:text-white transition-all duration-300 font-medium"
+        >
+          <lucide-icon [img]="PawPrint" [size]="18"></lucide-icon>
+          <span>Manage Dogs</span>
+        </a>
+        <a
+          routerLink="/admin/adoptions"
+          routerLinkActive="bg-[#2D6A4F] text-white"
+          class="flex items-center space-x-2 px-4 py-2 rounded-lg text-[#1B4332] hover:bg-[#52B788] hover:text-white transition-all duration-300 font-medium"
+        >
+          <lucide-icon [img]="FileText" [size]="18"></lucide-icon>
+          <span>Adoptions</span>
+        </a>
+        }
+      </div>
+
+      <!-- Right Side Actions -->
+      <div class="hidden md:flex items-center space-x-3">
+        @if (isAuthenticated()) {
+        <!-- User Menu Dropdown -->
+        <div class="relative">
+          <button
+            (click)="toggleUserMenu()"
+            class="flex items-center space-x-2 px-4 py-2 rounded-lg bg-[#2D6A4F] text-white hover:bg-[#1B4332] transition-all duration-300 font-medium"
+          >
+            <div
+              class="h-8 w-8 rounded-full bg-[#52B788] flex items-center justify-center text-white font-semibold"
+            >
+              {{ userInitials() }}
+            </div>
+            <span class="max-w-[150px] truncate">{{ userFullName() }}</span>
+          </button>
+
+          <!-- Dropdown Menu -->
+          @if (isUserMenuOpen) {
+          <div
+            class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 animate-fade-in"
+          >
+            <a
+              routerLink="/profile"
+              (click)="closeUserMenu()"
+              class="flex items-center space-x-2 px-4 py-2 text-[#1B4332] hover:bg-gray-50 transition-colors duration-200"
+            >
+              <lucide-icon [img]="Users" [size]="16"></lucide-icon>
+              <span>Profile</span>
+            </a>
+            <hr class="my-2 border-gray-100" />
+            <button
+              (click)="logout()"
+              class="w-full flex items-center space-x-2 px-4 py-2 text-[#E76F51] hover:bg-red-50 transition-colors duration-200"
+            >
+              <lucide-icon [img]="LogOut" [size]="16"></lucide-icon>
+              <span>Logout</span>
+            </button>
+          </div>
+          }
+        </div>
+        } @else {
+        <!-- Auth Buttons -->
+        <a
+          routerLink="/login"
+          class="flex items-center space-x-2 px-4 py-2 rounded-lg text-[#2D6A4F] border-2 border-[#2D6A4F] hover:bg-[#2D6A4F] hover:text-white transition-all duration-300 font-medium"
+        >
+          <lucide-icon [img]="LogIn" [size]="18"></lucide-icon>
+          <span>Login</span>
+        </a>
+        <a
+          routerLink="/register"
+          class="flex items-center space-x-2 px-4 py-2 rounded-lg bg-[#2D6A4F] text-white hover:bg-[#1B4332] transition-all duration-300 font-medium"
+        >
+          <lucide-icon [img]="UserPlus" [size]="18"></lucide-icon>
+          <span>Sign Up</span>
+        </a>
+        }
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <div class="md:hidden">
+        <button
+          (click)="toggleMobileMenu()"
+          class="p-2 rounded-lg text-[#1B4332] hover:bg-gray-100 transition-colors duration-200"
+        >
+          @if (isMobileMenuOpen) {
+          <lucide-icon [img]="X" [size]="24"></lucide-icon>
+          } @else {
+          <lucide-icon [img]="Menu" [size]="24"></lucide-icon>
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  @if (isMobileMenuOpen) {
+  <div class="md:hidden bg-white border-t border-gray-100 shadow-lg animate-slide-down">
+    <div class="px-4 py-3 space-y-1">
+      <!-- Mobile Public Links (Always Visible) -->
+      <a
+        routerLink="/"
+        (click)="closeMobileMenu()"
+        routerLinkActive="bg-[#2D6A4F] text-white"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="flex items-center space-x-3 px-4 py-3 rounded-lg text-[#1B4332] hover:bg-[#52B788] hover:text-white transition-all duration-300 font-medium"
+      >
+        <lucide-icon [img]="Home" [size]="20"></lucide-icon>
+        <span>Home</span>
+      </a>
+
+      <a
+        routerLink="/about"
+        (click)="closeMobileMenu()"
+        routerLinkActive="bg-[#2D6A4F] text-white"
+        class="flex items-center space-x-3 px-4 py-3 rounded-lg text-[#1B4332] hover:bg-[#52B788] hover:text-white transition-all duration-300 font-medium"
+      >
+        <lucide-icon [img]="Info" [size]="20"></lucide-icon>
+        <span>About</span>
+      </a>
+
+      <a
+        [routerLink]="isAuthenticated() ? '/dogs' : '/dogs-public'"
+        (click)="closeMobileMenu()"
+        routerLinkActive="bg-[#2D6A4F] text-white"
+        class="flex items-center space-x-3 px-4 py-3 rounded-lg text-[#1B4332] hover:bg-[#52B788] hover:text-white transition-all duration-300 font-medium"
+      >
+        <lucide-icon [img]="PawPrint" [size]="20"></lucide-icon>
+        <span>Browse Dogs</span>
+      </a>
+
+      <a
+        routerLink="/contact"
+        (click)="closeMobileMenu()"
+        routerLinkActive="bg-[#2D6A4F] text-white"
+        class="flex items-center space-x-3 px-4 py-3 rounded-lg text-[#1B4332] hover:bg-[#52B788] hover:text-white transition-all duration-300 font-medium"
+      >
+        <lucide-icon [img]="Mail" [size]="20"></lucide-icon>
+        <span>Contact</span>
+      </a>
+
+      <!-- Mobile User Links -->
+      @if (isAuthenticated() && !isAdmin()) {
+      <a
+        routerLink="/my-requests"
+        (click)="closeMobileMenu()"
+        routerLinkActive="bg-[#2D6A4F] text-white"
+        class="flex items-center space-x-3 px-4 py-3 rounded-lg text-[#1B4332] hover:bg-[#52B788] hover:text-white transition-all duration-300 font-medium"
+      >
+        <lucide-icon [img]="Heart" [size]="20"></lucide-icon>
+        <span>My Requests</span>
+      </a>
+      <a
+        routerLink="/profile"
+        (click)="closeMobileMenu()"
+        routerLinkActive="bg-[#2D6A4F] text-white"
+        class="flex items-center space-x-3 px-4 py-3 rounded-lg text-[#1B4332] hover:bg-[#52B788] hover:text-white transition-all duration-300 font-medium"
+      >
+        <lucide-icon [img]="Users" [size]="20"></lucide-icon>
+        <span>Profile</span>
+      </a>
+      }
+
+      <!-- Mobile Admin Links -->
+      @if (isAuthenticated() && isAdmin()) {
+      <a
+        routerLink="/admin/dashboard"
+        (click)="closeMobileMenu()"
+        routerLinkActive="bg-[#2D6A4F] text-white"
+        class="flex items-center space-x-3 px-4 py-3 rounded-lg text-[#1B4332] hover:bg-[#52B788] hover:text-white transition-all duration-300 font-medium"
+      >
+        <lucide-icon [img]="LayoutDashboard" [size]="20"></lucide-icon>
+        <span>Dashboard</span>
+      </a>
+      <a
+        routerLink="/admin/dogs"
+        (click)="closeMobileMenu()"
+        routerLinkActive="bg-[#2D6A4F] text-white"
+        class="flex items-center space-x-3 px-4 py-3 rounded-lg text-[#1B4332] hover:bg-[#52B788] hover:text-white transition-all duration-300 font-medium"
+      >
+        <lucide-icon [img]="PawPrint" [size]="20"></lucide-icon>
+        <span>Manage Dogs</span>
+      </a>
+      <a
+        routerLink="/admin/adoptions"
+        (click)="closeMobileMenu()"
+        routerLinkActive="bg-[#2D6A4F] text-white"
+        class="flex items-center space-x-3 px-4 py-3 rounded-lg text-[#1B4332] hover:bg-[#52B788] hover:text-white transition-all duration-300 font-medium"
+      >
+        <lucide-icon [img]="FileText" [size]="20"></lucide-icon>
+        <span>Adoptions</span>
+      </a>
+      }
+
+      <hr class="my-3 border-gray-100" />
+
+      <!-- Mobile Auth Actions -->
+      @if (isAuthenticated()) {
+      <div class="px-4 py-2 text-sm text-[#6C757D]">
+        Signed in as <span class="font-semibold text-[#1B4332]">{{ userFullName() }}</span>
+      </div>
+      <button
+        (click)="logout()"
+        class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-[#E76F51] hover:bg-red-50 transition-all duration-300 font-medium"
+      >
+        <lucide-icon [img]="LogOut" [size]="20"></lucide-icon>
+        <span>Logout</span>
+      </button>
+      } @else {
+      <a
+        routerLink="/login"
+        (click)="closeMobileMenu()"
+        class="flex items-center justify-center space-x-2 px-4 py-3 rounded-lg text-[#2D6A4F] border-2 border-[#2D6A4F] hover:bg-[#2D6A4F] hover:text-white transition-all duration-300 font-medium"
+      >
+        <lucide-icon [img]="LogIn" [size]="20"></lucide-icon>
+        <span>Login</span>
+      </a>
+      <a
+        routerLink="/register"
+        (click)="closeMobileMenu()"
+        class="flex items-center justify-center space-x-2 px-4 py-3 rounded-lg bg-[#2D6A4F] text-white hover:bg-[#1B4332] transition-all duration-300 font-medium"
+      >
+        <lucide-icon [img]="UserPlus" [size]="20"></lucide-icon>
+        <span>Sign Up</span>
+      </a>
+      }
+    </div>
+  </div>
+  }
+</nav>

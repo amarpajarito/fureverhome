@@ -1,0 +1,5 @@
+/* Footer custom styles */
+:host {
+  display: block;
+  margin-top: auto;
+}

@@ -1,0 +1,183 @@
+<footer class="bg-[#1B4332] text-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <!-- Brand Section -->
+      <div class="space-y-4">
+        <div class="flex items-center">
+          <img src="/logo.svg" alt="FureverHome Logo" class="h-48" />
+        </div>
+        <p class="text-gray-300 text-sm leading-relaxed">
+          Connecting loving families with dogs in need of a forever home. Every adoption changes two
+          lives.
+        </p>
+        <div class="flex items-center space-x-2 text-[#52B788]">
+          <lucide-icon [img]="Heart" [size]="20"></lucide-icon>
+          <span class="text-sm font-medium">Saving lives, one paw at a time</span>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="space-y-4">
+        <h3 class="text-lg font-semibold font-['Poppins']">Quick Links</h3>
+        <ul class="space-y-2">
+          <li>
+            <a
+              routerLink="/"
+              class="text-gray-300 hover:text-[#52B788] transition-colors duration-200 text-sm"
+            >
+              Home
+            </a>
+          </li>
+          <li>
+            <a
+              routerLink="/dogs"
+              class="text-gray-300 hover:text-[#52B788] transition-colors duration-200 text-sm"
+            >
+              Browse Dogs
+            </a>
+          </li>
+          <li>
+            <a
+              routerLink="/my-requests"
+              class="text-gray-300 hover:text-[#52B788] transition-colors duration-200 text-sm"
+            >
+              My Requests
+            </a>
+          </li>
+          <li>
+            <a
+              routerLink="/about"
+              class="text-gray-300 hover:text-[#52B788] transition-colors duration-200 text-sm"
+            >
+              About Us
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Resources -->
+      <div class="space-y-4">
+        <h3 class="text-lg font-semibold font-['Poppins']">Resources</h3>
+        <ul class="space-y-2">
+          <li>
+            <a
+              href="#"
+              class="text-gray-300 hover:text-[#52B788] transition-colors duration-200 text-sm"
+            >
+              Adoption Guide
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              class="text-gray-300 hover:text-[#52B788] transition-colors duration-200 text-sm"
+            >
+              Pet Care Tips
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              class="text-gray-300 hover:text-[#52B788] transition-colors duration-200 text-sm"
+            >
+              FAQs
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              class="text-gray-300 hover:text-[#52B788] transition-colors duration-200 text-sm"
+            >
+              Privacy Policy
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="space-y-4">
+        <h3 class="text-lg font-semibold font-['Poppins']">Contact Us</h3>
+        <ul class="space-y-3">
+          <li class="flex items-start space-x-3">
+            <lucide-icon
+              [img]="MapPin"
+              [size]="18"
+              class="text-[#52B788] mt-0.5 flex-shrink-0"
+            ></lucide-icon>
+            <span class="text-gray-300 text-sm">123 Adoption Street, Pet City, PC 12345</span>
+          </li>
+          <li class="flex items-center space-x-3">
+            <lucide-icon
+              [img]="Phone"
+              [size]="18"
+              class="text-[#52B788] flex-shrink-0"
+            ></lucide-icon>
+            <span class="text-gray-300 text-sm">(555) 123-4567</span>
+          </li>
+          <li class="flex items-center space-x-3">
+            <lucide-icon
+              [img]="Mail"
+              [size]="18"
+              class="text-[#52B788] flex-shrink-0"
+            ></lucide-icon>
+            <span class="text-gray-300 text-sm">info&#64;fureverhome.com</span>
+          </li>
+        </ul>
+
+        <!-- Social Media -->
+        <div class="pt-2">
+          <p class="text-sm font-medium mb-3">Follow Us</p>
+          <div class="flex space-x-4">
+            <a
+              href="#"
+              class="bg-[#2D6A4F] p-2 rounded-lg hover:bg-[#52B788] transition-colors duration-200"
+            >
+              <lucide-icon [img]="Facebook" [size]="20"></lucide-icon>
+            </a>
+            <a
+              href="#"
+              class="bg-[#2D6A4F] p-2 rounded-lg hover:bg-[#52B788] transition-colors duration-200"
+            >
+              <lucide-icon [img]="Twitter" [size]="20"></lucide-icon>
+            </a>
+            <a
+              href="#"
+              class="bg-[#2D6A4F] p-2 rounded-lg hover:bg-[#52B788] transition-colors duration-200"
+            >
+              <lucide-icon [img]="Instagram" [size]="20"></lucide-icon>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="border-t border-[#2D6A4F] mt-8 pt-8">
+      <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+        <p class="text-gray-400 text-sm">
+          &copy; {{ currentYear }} FureverHome. All rights reserved.
+        </p>
+        <div class="flex space-x-6">
+          <a
+            href="#"
+            class="text-gray-400 hover:text-[#52B788] transition-colors duration-200 text-sm"
+          >
+            Terms of Service
+          </a>
+          <a
+            href="#"
+            class="text-gray-400 hover:text-[#52B788] transition-colors duration-200 text-sm"
+          >
+            Privacy Policy
+          </a>
+          <a
+            href="#"
+            class="text-gray-400 hover:text-[#52B788] transition-colors duration-200 text-sm"
+          >
+            Cookie Policy
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
