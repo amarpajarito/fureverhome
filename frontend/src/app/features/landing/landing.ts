@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import {
@@ -10,6 +10,7 @@ import {
   ArrowRight,
   PawPrint,
 } from 'lucide-angular';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-landing',
@@ -19,6 +20,8 @@ import {
   styleUrl: './landing.css',
 })
 export class Landing {
+  authService = inject(AuthService);
+
   // Icons
   readonly Heart = Heart;
   readonly Shield = Shield;

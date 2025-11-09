@@ -22,21 +22,42 @@
           journey today. Change a life, including your own.
         </p>
 
+        <!-- CTAs - Simplified with consistent Learn More -->
+        @if (!authService.isAuthenticated()) {
+        <!-- Not Logged In -->
         <div class="flex flex-col sm:flex-row gap-4">
           <a
-            routerLink="/dogs-public"
+            routerLink="/register"
             class="inline-flex items-center justify-center space-x-2 px-8 py-4 bg-[#F4A261] text-white rounded-lg hover:bg-[#E76F51] transition-colors duration-300 font-semibold text-lg shadow-lg"
           >
-            <span>Browse Dogs</span>
+            <span>Start Adopting</span>
             <lucide-icon [img]="ArrowRight" [size]="20"></lucide-icon>
           </a>
           <a
-            routerLink="/register"
+            routerLink="/about"
             class="inline-flex items-center justify-center space-x-2 px-8 py-4 bg-white text-[#2D6A4F] rounded-lg hover:bg-gray-100 transition-colors duration-300 font-semibold text-lg shadow-lg"
           >
-            <span>Get Started</span>
+            <span>Learn More</span>
           </a>
         </div>
+        } @else {
+        <!-- Logged In -->
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a
+            routerLink="/dogs"
+            class="inline-flex items-center justify-center space-x-2 px-8 py-4 bg-[#F4A261] text-white rounded-lg hover:bg-[#E76F51] transition-colors duration-300 font-semibold text-lg shadow-lg"
+          >
+            <span>Browse Available Dogs</span>
+            <lucide-icon [img]="ArrowRight" [size]="20"></lucide-icon>
+          </a>
+          <a
+            routerLink="/about"
+            class="inline-flex items-center justify-center space-x-2 px-8 py-4 bg-white text-[#2D6A4F] rounded-lg hover:bg-gray-100 transition-colors duration-300 font-semibold text-lg shadow-lg"
+          >
+            <span>Learn More</span>
+          </a>
+        </div>
+        }
 
         <!-- Stats -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6 pt-8">
@@ -58,8 +79,8 @@
             class="absolute inset-0 bg-[#F4A261] rounded-3xl transform rotate-3 opacity-20"
           ></div>
           <img
-            src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=600&h=600&fit=crop"
-            alt="Happy dog"
+            src="/hero.jpg"
+            alt="Woman holding golden retriever"
             class="relative rounded-3xl shadow-2xl object-cover w-full h-[500px]"
           />
         </div>
@@ -107,24 +128,48 @@
         Meet Our Featured Dogs
       </h2>
       <p class="text-lg text-[#6C757D] max-w-2xl mx-auto">
-        These lovable companions are waiting for their forever homes. Could one of them be your new
-        best friend?
+        These lovable dogs are waiting for their forever homes. Could one of them be your new best
+        friend?
       </p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
       @for (dog of featuredDogs; track dog.id) {
-      <div class="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100">
+      <!-- Clickable card with hover overlay -->
+      @if (authService.isAuthenticated()) {
+      <a
+        routerLink="/dogs/{{ dog.id }}"
+        class="group bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-300 cursor-pointer block"
+      >
         <div class="relative h-64 overflow-hidden">
-          <img [src]="dog.imageUrl" [alt]="dog.name" class="w-full h-full object-cover" />
+          <img
+            [src]="dog.imageUrl"
+            [alt]="dog.name"
+            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+          />
           <div
             class="absolute top-4 right-4 bg-[#40916C] text-white px-3 py-1 rounded-full text-sm font-medium"
           >
             Available
           </div>
+          <!-- Hover overlay for authenticated users -->
+          <div
+            class="absolute inset-0 bg-[#2D6A4F] opacity-0 group-hover:opacity-90 transition-all duration-300 flex items-center justify-center pointer-events-none group-hover:pointer-events-auto"
+          >
+            <div
+              class="text-white font-semibold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center space-x-2"
+            >
+              <span>View Full Details</span>
+              <lucide-icon [img]="ArrowRight" [size]="20"></lucide-icon>
+            </div>
+          </div>
         </div>
         <div class="p-6">
-          <h3 class="text-2xl font-bold text-[#1B4332] font-['Poppins'] mb-2">{{ dog.name }}</h3>
+          <h3
+            class="text-2xl font-bold text-[#1B4332] font-['Poppins'] mb-2 group-hover:text-[#2D6A4F] transition-colors"
+          >
+            {{ dog.name }}
+          </h3>
           <div class="flex items-center space-x-4 text-sm text-[#6C757D] mb-3">
             <span>{{ dog.breed }}</span>
             <span>•</span>
@@ -132,27 +177,75 @@
             <span>•</span>
             <span>{{ dog.gender }}</span>
           </div>
-          <p class="text-[#6C757D] mb-4">{{ dog.description }}</p>
-          <a
-            routerLink="/dogs/{{ dog.id }}"
-            class="inline-flex items-center space-x-2 text-[#2D6A4F] hover:text-[#1B4332] font-medium transition-colors duration-200"
-          >
-            <span>Learn More</span>
-            <lucide-icon [img]="ArrowRight" [size]="16"></lucide-icon>
-          </a>
+          <p class="text-[#6C757D]">{{ dog.description }}</p>
         </div>
-      </div>
-      }
+      </a>
+      } @else {
+      <a
+        routerLink="/register"
+        class="group bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-300 cursor-pointer block"
+      >
+        <div class="relative h-64 overflow-hidden">
+          <img
+            [src]="dog.imageUrl"
+            [alt]="dog.name"
+            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+          />
+          <div
+            class="absolute top-4 right-4 bg-[#40916C] text-white px-3 py-1 rounded-full text-sm font-medium"
+          >
+            Available
+          </div>
+          <!-- Hover overlay for non-authenticated users -->
+          <div
+            class="absolute inset-0 bg-[#2D6A4F] opacity-0 group-hover:opacity-90 transition-all duration-300 flex items-center justify-center pointer-events-none group-hover:pointer-events-auto"
+          >
+            <div
+              class="text-white font-semibold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center space-x-2"
+            >
+              <span>Sign Up to Learn More</span>
+              <lucide-icon [img]="ArrowRight" [size]="20"></lucide-icon>
+            </div>
+          </div>
+        </div>
+        <div class="p-6">
+          <h3
+            class="text-2xl font-bold text-[#1B4332] font-['Poppins'] mb-2 group-hover:text-[#2D6A4F] transition-colors"
+          >
+            {{ dog.name }}
+          </h3>
+          <div class="flex items-center space-x-4 text-sm text-[#6C757D] mb-3">
+            <span>{{ dog.breed }}</span>
+            <span>•</span>
+            <span>{{ dog.age }}</span>
+            <span>•</span>
+            <span>{{ dog.gender }}</span>
+          </div>
+          <p class="text-[#6C757D]">{{ dog.description }}</p>
+        </div>
+      </a>
+      } }
     </div>
 
+    <!-- CTA at bottom - Different based on auth -->
     <div class="text-center">
+      @if (!authService.isAuthenticated()) {
       <a
-        routerLink="/dogs-public"
+        routerLink="/register"
         class="inline-flex items-center space-x-2 px-8 py-4 bg-[#2D6A4F] text-white rounded-lg hover:bg-[#1B4332] transition-colors duration-300 font-semibold text-lg shadow-lg"
       >
-        <span>View All Dogs</span>
+        <span>Sign Up to Adopt</span>
         <lucide-icon [img]="ArrowRight" [size]="20"></lucide-icon>
       </a>
+      } @else {
+      <a
+        routerLink="/dogs"
+        class="inline-flex items-center space-x-2 px-8 py-4 bg-[#2D6A4F] text-white rounded-lg hover:bg-[#1B4332] transition-colors duration-300 font-semibold text-lg shadow-lg"
+      >
+        <span>View All Available Dogs</span>
+        <lucide-icon [img]="ArrowRight" [size]="20"></lucide-icon>
+      </a>
+      }
     </div>
   </div>
 </section>
@@ -161,6 +254,9 @@
 <section class="py-20 bg-gradient-to-r from-[#2D6A4F] to-[#52B788] text-white">
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
     <lucide-icon [img]="Heart" [size]="64" class="mx-auto mb-6 opacity-90"></lucide-icon>
+
+    @if (!authService.isAuthenticated()) {
+    <!-- Not logged in -->
     <h2 class="text-3xl md:text-4xl font-bold font-['Poppins'] mb-6">
       Ready to Make a Difference?
     </h2>
@@ -183,5 +279,25 @@
         <span>Sign In</span>
       </a>
     </div>
+    } @else {
+    <!-- Logged in -->
+    <h2 class="text-3xl md:text-4xl font-bold font-['Poppins'] mb-6">
+      Welcome back, {{ authService.getFullName() }}!
+    </h2>
+    <p class="text-xl text-gray-100 mb-8 leading-relaxed">
+      Ready to find your perfect companion? Browse our available dogs and start the adoption process
+      today.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a
+        routerLink="/dogs"
+        class="inline-flex items-center justify-center space-x-2 px-10 py-4 bg-white text-[#2D6A4F] rounded-lg hover:bg-gray-100 transition-colors duration-300 font-bold text-lg shadow-lg"
+      >
+        <lucide-icon [img]="PawPrint" [size]="20"></lucide-icon>
+        <span>Browse Available Dogs</span>
+        <lucide-icon [img]="ArrowRight" [size]="20"></lucide-icon>
+      </a>
+    </div>
+    }
   </div>
 </section>
