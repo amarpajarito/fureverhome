@@ -57,6 +57,7 @@ export class Navbar {
   userFullName = computed(() => this.authService.getFullName());
   userEmail = computed(() => this.authService.getEmail());
   userInitials = computed(() => this.authService.getInitials());
+  userAvatarUrl = computed(() => this.authService.getAvatarUrl());
 
   toggleMobileMenu(): void {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
