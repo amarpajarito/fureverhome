@@ -1,0 +1,232 @@
+<!-- Hero Section -->
+<section class="bg-gradient-to-br from-[#2D6A4F] to-[#1B4332] text-white py-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center">
+      <h1 class="text-4xl md:text-5xl font-bold font-['Poppins'] mb-6">Get In Touch</h1>
+      <p class="text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
+        Have questions about adoption? Need help? We're here for you. Reach out to our friendly
+        team.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Info Cards -->
+<section class="py-20 bg-[#FDFEFE]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+      @for (info of contactInfo; track info.title) {
+      <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 text-center">
+        <div
+          class="bg-[#2D6A4F] w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4"
+        >
+          <lucide-icon [img]="info.icon" [size]="24" class="text-white"></lucide-icon>
+        </div>
+        <h3 class="text-lg font-semibold text-[#1B4332] font-['Poppins'] mb-2">
+          {{ info.title }}
+        </h3>
+        <p class="text-[#2D6A4F] font-medium mb-1">{{ info.details }}</p>
+        <p class="text-sm text-[#6C757D]">{{ info.subtitle }}</p>
+      </div>
+      }
+    </div>
+
+    <!-- Contact Form & Map -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <!-- Contact Form -->
+      <div class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
+        <div class="flex items-center space-x-3 mb-6">
+          <div class="bg-[#2D6A4F] p-3 rounded-lg">
+            <lucide-icon [img]="MessageCircle" [size]="24" class="text-white"></lucide-icon>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold text-[#1B4332] font-['Poppins']">Send Us a Message</h2>
+            <p class="text-[#6C757D]">We'll get back to you soon</p>
+          </div>
+        </div>
+
+        <!-- Success Message -->
+        @if (isSubmitted) {
+        <div
+          class="bg-[#40916C]/10 border border-[#40916C] text-[#40916C] rounded-lg p-4 mb-6 animate-fade-in"
+        >
+          <p class="font-medium">✓ Message sent successfully!</p>
+          <p class="text-sm mt-1">We'll respond within 24 hours.</p>
+        </div>
+        }
+
+        <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="space-y-5">
+          <!-- Name -->
+          <div>
+            <label for="name" class="block text-sm font-medium text-[#1B4332] mb-2">
+              Full Name *
+            </label>
+            <input
+              type="text"
+              id="name"
+              formControlName="name"
+              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#2D6A4F] focus:border-transparent transition-all duration-200 outline-none"
+              placeholder="John Doe"
+              [class.border-[#E76F51]]="f['name'].invalid && f['name'].touched"
+            />
+            @if (f['name'].invalid && f['name'].touched) {
+            <p class="text-[#E76F51] text-sm mt-1">Please enter your name (min 2 characters)</p>
+            }
+          </div>
+
+          <!-- Email -->
+          <div>
+            <label for="email" class="block text-sm font-medium text-[#1B4332] mb-2">
+              Email Address *
+            </label>
+            <input
+              type="email"
+              id="email"
+              formControlName="email"
+              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#2D6A4F] focus:border-transparent transition-all duration-200 outline-none"
+              placeholder="john@example.com"
+              [class.border-[#E76F51]]="f['email'].invalid && f['email'].touched"
+            />
+            @if (f['email'].invalid && f['email'].touched) {
+            <p class="text-[#E76F51] text-sm mt-1">Please enter a valid email address</p>
+            }
+          </div>
+
+          <!-- Phone -->
+          <div>
+            <label for="phone" class="block text-sm font-medium text-[#1B4332] mb-2">
+              Phone Number *
+            </label>
+            <input
+              type="tel"
+              id="phone"
+              formControlName="phone"
+              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#2D6A4F] focus:border-transparent transition-all duration-200 outline-none"
+              placeholder="(555) 123-4567"
+              [class.border-[#E76F51]]="f['phone'].invalid && f['phone'].touched"
+            />
+            @if (f['phone'].invalid && f['phone'].touched) {
+            <p class="text-[#E76F51] text-sm mt-1">Please enter a valid phone number</p>
+            }
+          </div>
+
+          <!-- Subject -->
+          <div>
+            <label for="subject" class="block text-sm font-medium text-[#1B4332] mb-2">
+              Subject *
+            </label>
+            <select
+              id="subject"
+              formControlName="subject"
+              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#2D6A4F] focus:border-transparent transition-all duration-200 outline-none"
+              [class.border-[#E76F51]]="f['subject'].invalid && f['subject'].touched"
+            >
+              <option value="">Select a subject</option>
+              <option value="adoption">Adoption Inquiry</option>
+              <option value="general">General Question</option>
+              <option value="support">Support</option>
+              <option value="feedback">Feedback</option>
+              <option value="other">Other</option>
+            </select>
+            @if (f['subject'].invalid && f['subject'].touched) {
+            <p class="text-[#E76F51] text-sm mt-1">Please select a subject</p>
+            }
+          </div>
+
+          <!-- Message -->
+          <div>
+            <label for="message" class="block text-sm font-medium text-[#1B4332] mb-2">
+              Message *
+            </label>
+            <textarea
+              id="message"
+              formControlName="message"
+              rows="5"
+              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#2D6A4F] focus:border-transparent transition-all duration-200 outline-none resize-none"
+              placeholder="Tell us how we can help you..."
+              [class.border-[#E76F51]]="f['message'].invalid && f['message'].touched"
+            ></textarea>
+            @if (f['message'].invalid && f['message'].touched) {
+            <p class="text-[#E76F51] text-sm mt-1">Please enter a message (min 10 characters)</p>
+            }
+          </div>
+
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            [disabled]="isSubmitting"
+            class="w-full flex items-center justify-center space-x-2 px-6 py-4 bg-[#2D6A4F] text-white rounded-lg hover:bg-[#1B4332] transition-colors duration-300 font-semibold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            @if (isSubmitting) {
+            <span>Sending...</span>
+            } @else {
+            <lucide-icon [img]="Send" [size]="20"></lucide-icon>
+            <span>Send Message</span>
+            }
+          </button>
+        </form>
+      </div>
+
+      <!-- Map & Additional Info -->
+      <div class="space-y-6">
+        <!-- Map Placeholder -->
+        <div class="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100">
+          <div
+            class="bg-gradient-to-br from-[#2D6A4F] to-[#52B788] h-64 flex items-center justify-center text-white"
+          >
+            <div class="text-center">
+              <lucide-icon [img]="MapPin" [size]="48" class="mx-auto mb-4"></lucide-icon>
+              <p class="text-lg font-semibold">123 Adoption Street</p>
+              <p class="text-gray-200">Pet City, PC 12345</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- FAQ Quick Links -->
+        <div class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
+          <h3 class="text-xl font-bold text-[#1B4332] font-['Poppins'] mb-4">
+            Frequently Asked Questions
+          </h3>
+          <ul class="space-y-3">
+            <li>
+              <a
+                href="#"
+                class="text-[#2D6A4F] hover:text-[#1B4332] transition-colors duration-200 flex items-center space-x-2"
+              >
+                <span class="text-[#F4A261]">•</span>
+                <span>How do I start the adoption process?</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="text-[#2D6A4F] hover:text-[#1B4332] transition-colors duration-200 flex items-center space-x-2"
+              >
+                <span class="text-[#F4A261]">•</span>
+                <span>What are the adoption fees?</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="text-[#2D6A4F] hover:text-[#1B4332] transition-colors duration-200 flex items-center space-x-2"
+              >
+                <span class="text-[#F4A261]">•</span>
+                <span>Can I meet the dogs before adopting?</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="text-[#2D6A4F] hover:text-[#1B4332] transition-colors duration-200 flex items-center space-x-2"
+              >
+                <span class="text-[#F4A261]">•</span>
+                <span>What if I have other pets?</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
