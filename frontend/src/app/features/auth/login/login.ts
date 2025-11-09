@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LucideAngularModule, Mail, Lock, LogIn, Eye, EyeOff } from 'lucide-angular';
+import { LucideAngularModule, Mail, Lock, LogIn } from 'lucide-angular';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
@@ -21,13 +21,12 @@ export class Login {
   readonly Mail = Mail;
   readonly Lock = Lock;
   readonly LogIn = LogIn;
-  readonly Eye = Eye;
-  readonly EyeOff = EyeOff;
 
   loginForm: FormGroup;
   isSubmitting = false;
-  showPassword = false;
+  isSuccess = false;
   errorMessage = '';
+  successMessage = '';
 
   constructor() {
     this.loginForm = this.fb.group({
@@ -39,10 +38,6 @@ export class Login {
 
   get f() {
     return this.loginForm.controls;
-  }
-
-  togglePasswordVisibility(): void {
-    this.showPassword = !this.showPassword;
   }
 
   onSubmit(): void {
@@ -58,17 +53,36 @@ export class Login {
 
       this.authService.login(loginRequest).subscribe({
         next: (response) => {
-          this.isSubmitting = false;
+          // Show success state
+          this.isSuccess = true;
+          this.successMessage = 'Login successful! Redirecting...';
 
-          // Navigate based on user role
-          if (response.role === 'ADMIN') {
-            this.router.navigate(['/admin/dashboard']);
-          } else {
-            this.router.navigate(['/dogs']);
-          }
+          // Refresh user profile to get latest avatar and data
+          this.authService.refreshUserProfile().subscribe({
+            next: () => {
+              console.log('User profile refreshed after login');
+            },
+            error: (error) => {
+              console.error('Error refreshing profile:', error);
+              // Don't block login on profile refresh error
+            },
+          });
+
+          // Delay for smooth transition
+          setTimeout(() => {
+            this.isSubmitting = false;
+
+            // Navigate based on user role
+            if (response.role === 'ADMIN') {
+              this.router.navigate(['/admin/dashboard']);
+            } else {
+              this.router.navigate(['/dogs']);
+            }
+          }, 1500); // 1.5 second delay for animation
         },
         error: (error) => {
           this.isSubmitting = false;
+          this.isSuccess = false;
           console.error('Login error:', error);
 
           if (error.status === 400 || error.status === 401) {

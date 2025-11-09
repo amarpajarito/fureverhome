@@ -16,8 +16,6 @@ import {
   Lock,
   Phone,
   UserPlus,
-  Eye,
-  EyeOff,
   CheckCircle,
 } from 'lucide-angular';
 import { AuthService } from '../../../core/services/auth.service';
@@ -40,21 +38,21 @@ export class Register {
   readonly Lock = Lock;
   readonly Phone = Phone;
   readonly UserPlus = UserPlus;
-  readonly Eye = Eye;
-  readonly EyeOff = EyeOff;
   readonly CheckCircle = CheckCircle;
 
   registerForm: FormGroup;
   isSubmitting = false;
-  showPassword = false;
-  showConfirmPassword = false;
+  isSuccess = false;
   errorMessage = '';
+  successMessage = '';
 
   constructor() {
     this.registerForm = this.fb.group(
       {
-        username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+        firstName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
+        lastName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
         email: ['', [Validators.required, Validators.email]],
+        phoneNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10,15}$/)]],
         password: ['', [Validators.required, Validators.minLength(6)]],
         confirmPassword: ['', [Validators.required]],
         agreeToTerms: [false, [Validators.requiredTrue]],
@@ -78,14 +76,6 @@ export class Register {
     return password.value === confirmPassword.value ? null : { passwordMismatch: true };
   }
 
-  togglePasswordVisibility(): void {
-    this.showPassword = !this.showPassword;
-  }
-
-  toggleConfirmPasswordVisibility(): void {
-    this.showConfirmPassword = !this.showConfirmPassword;
-  }
-
   onSubmit(): void {
     this.errorMessage = '';
 
@@ -93,28 +83,38 @@ export class Register {
       this.isSubmitting = true;
 
       const registerRequest = {
-        username: this.registerForm.value.username,
+        firstName: this.registerForm.value.firstName,
+        lastName: this.registerForm.value.lastName,
         email: this.registerForm.value.email,
+        phoneNumber: this.registerForm.value.phoneNumber,
         password: this.registerForm.value.password,
       };
 
       this.authService.register(registerRequest).subscribe({
         next: (response) => {
-          this.isSubmitting = false;
+          // Show success state
+          this.isSuccess = true;
+          this.successMessage = 'Registration successful! Setting up your account...';
 
-          // Navigate based on user role (usually USER for new registrations)
-          if (response.role === 'ADMIN') {
-            this.router.navigate(['/admin/dashboard']);
-          } else {
-            this.router.navigate(['/dogs']);
-          }
+          // Delay for smooth transition
+          setTimeout(() => {
+            this.isSubmitting = false;
+
+            // Navigate based on user role (usually USER for new registrations)
+            if (response.role === 'ADMIN') {
+              this.router.navigate(['/admin/dashboard']);
+            } else {
+              this.router.navigate(['/dogs']);
+            }
+          }, 1500); // 1.5 second delay for animation
         },
         error: (error) => {
           this.isSubmitting = false;
+          this.isSuccess = false;
           console.error('Registration error:', error);
 
           if (error.status === 400) {
-            this.errorMessage = 'Email or username already exists';
+            this.errorMessage = 'Email already exists';
           } else {
             this.errorMessage = 'An error occurred. Please try again later.';
           }
