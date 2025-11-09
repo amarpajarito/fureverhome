@@ -1,0 +1,164 @@
+<div
+  class="min-h-screen bg-gradient-to-br from-[#FDFEFE] to-[#E8F5E9] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
+>
+  <div class="max-w-md w-full">
+    <!-- Logo & Header -->
+    <div class="text-center mb-8">
+      <div class="flex justify-center mb-6">
+        <img
+          src="/logo.svg"
+          alt="FureverHome Logo"
+          class="h-20 hover:scale-105 transition-transform duration-300"
+        />
+      </div>
+      <h2 class="text-3xl font-bold text-[#1B4332] font-['Poppins']">Welcome Back</h2>
+      <p class="mt-2 text-[#6C757D]">Sign in to continue your adoption journey</p>
+    </div>
+
+    <!-- Login Form Card -->
+    <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+      <!-- Error Message -->
+      @if (errorMessage) {
+      <div
+        class="bg-[#E76F51]/10 border border-[#E76F51] text-[#E76F51] rounded-lg p-4 mb-6 animate-fade-in"
+      >
+        <p class="text-sm">{{ errorMessage }}</p>
+      </div>
+      }
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        <!-- Email -->
+        <div>
+          <label for="email" class="block text-sm font-medium text-[#1B4332] mb-2">
+            Email Address
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <lucide-icon [img]="Mail" [size]="20" class="text-[#6C757D]"></lucide-icon>
+            </div>
+            <input
+              type="email"
+              id="email"
+              formControlName="email"
+              class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#2D6A4F] focus:border-transparent transition-all duration-200 outline-none"
+              placeholder="you@example.com"
+              [class.border-[#E76F51]]="f['email'].invalid && f['email'].touched"
+            />
+          </div>
+          @if (f['email'].invalid && f['email'].touched) {
+          <p class="text-[#E76F51] text-sm mt-1">
+            @if (f['email'].errors?.['required']) { Email is required } @else if
+            (f['email'].errors?.['email']) { Please enter a valid email address }
+          </p>
+          }
+        </div>
+
+        <!-- Password -->
+        <div>
+          <label for="password" class="block text-sm font-medium text-[#1B4332] mb-2">
+            Password
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <lucide-icon [img]="Lock" [size]="20" class="text-[#6C757D]"></lucide-icon>
+            </div>
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              id="password"
+              formControlName="password"
+              class="w-full pl-10 pr-12 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#2D6A4F] focus:border-transparent transition-all duration-200 outline-none"
+              placeholder="Enter your password"
+              [class.border-[#E76F51]]="f['password'].invalid && f['password'].touched"
+            />
+            <button
+              type="button"
+              (click)="togglePasswordVisibility()"
+              class="absolute inset-y-0 right-0 pr-3 flex items-center text-[#6C757D] hover:text-[#2D6A4F] transition-colors duration-200"
+            >
+              @if (showPassword) {
+              <lucide-icon [img]="EyeOff" [size]="20"></lucide-icon>
+              } @else {
+              <lucide-icon [img]="Eye" [size]="20"></lucide-icon>
+              }
+            </button>
+          </div>
+          @if (f['password'].invalid && f['password'].touched) {
+          <p class="text-[#E76F51] text-sm mt-1">
+            @if (f['password'].errors?.['required']) { Password is required } @else if
+            (f['password'].errors?.['minlength']) { Password must be at least 6 characters }
+          </p>
+          }
+        </div>
+
+        <!-- Remember Me & Forgot Password -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <input
+              type="checkbox"
+              id="rememberMe"
+              formControlName="rememberMe"
+              class="h-4 w-4 text-[#2D6A4F] focus:ring-[#2D6A4F] border-gray-300 rounded cursor-pointer"
+            />
+            <label for="rememberMe" class="ml-2 block text-sm text-[#6C757D] cursor-pointer">
+              Remember me
+            </label>
+          </div>
+          <div>
+            <a
+              href="#"
+              class="text-sm font-medium text-[#2D6A4F] hover:text-[#1B4332] transition-colors duration-200"
+            >
+              Forgot password?
+            </a>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          [disabled]="isSubmitting"
+          class="w-full flex items-center justify-center space-x-2 px-6 py-3 bg-[#2D6A4F] text-white rounded-lg hover:bg-[#1B4332] transition-all duration-300 font-semibold shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          @if (isSubmitting) {
+          <span>Signing in...</span>
+          } @else {
+          <lucide-icon [img]="LogIn" [size]="20"></lucide-icon>
+          <span>Sign In</span>
+          }
+        </button>
+      </form>
+
+      <!-- Divider -->
+      <div class="mt-6">
+        <div class="relative">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-gray-300"></div>
+          </div>
+          <div class="relative flex justify-center text-sm">
+            <span class="px-4 bg-white text-[#6C757D]">New to FureverHome?</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sign Up Link -->
+      <div class="mt-6">
+        <a
+          routerLink="/register"
+          class="w-full flex items-center justify-center px-6 py-3 border-2 border-[#2D6A4F] text-[#2D6A4F] rounded-lg hover:bg-[#2D6A4F] hover:text-white transition-all duration-300 font-semibold"
+        >
+          Create an Account
+        </a>
+      </div>
+    </div>
+
+    <!-- Back to Home -->
+    <div class="text-center mt-6">
+      <a
+        routerLink="/"
+        class="text-sm text-[#6C757D] hover:text-[#2D6A4F] transition-colors duration-200"
+      >
+        ← Back to Home
+      </a>
+    </div>
+  </div>
+</div>
