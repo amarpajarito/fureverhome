@@ -1,0 +1,239 @@
+<!-- Hero Section -->
+<section class="bg-gradient-to-br from-[#2D6A4F] to-[#1B4332] text-white py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center">
+      <h1 class="text-4xl md:text-5xl font-bold font-['Poppins'] mb-4">
+        Available Dogs for Adoption
+      </h1>
+      <p class="text-xl text-gray-200 max-w-2xl mx-auto">
+        Find your perfect companion from our loving dogs waiting for their forever home
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Search & Filters Section -->
+<section class="bg-white border-b border-gray-200 py-6">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+      <!-- Search -->
+      <div class="md:col-span-2">
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <lucide-icon [img]="Search" [size]="20" class="text-gray-400"></lucide-icon>
+          </div>
+          <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            (input)="onSearchChange($event)"
+            placeholder="Search by name or breed..."
+            class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D6A4F] focus:border-transparent outline-none transition-all"
+          />
+        </div>
+      </div>
+
+      <!-- Breed Filter -->
+      <div>
+        <select
+          [(ngModel)]="selectedBreed"
+          (change)="onBreedChange($event)"
+          class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D6A4F] focus:border-transparent outline-none transition-all"
+        >
+          <option value="">All Breeds</option>
+          @for (breed of breeds; track breed) {
+          <option [value]="breed">{{ breed }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Gender Filter -->
+      <div>
+        <select
+          [(ngModel)]="selectedGender"
+          (change)="onGenderChange($event)"
+          class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D6A4F] focus:border-transparent outline-none transition-all"
+        >
+          <option value="">All Genders</option>
+          <option value="MALE">Male</option>
+          <option value="FEMALE">Female</option>
+        </select>
+      </div>
+
+      <!-- Age Filter -->
+      <div>
+        <select
+          [(ngModel)]="selectedAge"
+          (change)="onAgeChange($event)"
+          class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D6A4F] focus:border-transparent outline-none transition-all"
+        >
+          <option value="">All Ages</option>
+          <option value="puppy">Puppy (&lt; 1 year)</option>
+          <option value="young">Young (1-3 years)</option>
+          <option value="adult">Adult (4-7 years)</option>
+          <option value="senior">Senior (8+ years)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Favorites Toggle & Active Filters -->
+    <div class="mt-4 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <!-- Show Favorites Toggle -->
+        <label class="flex items-center space-x-2 cursor-pointer">
+          <input
+            type="checkbox"
+            [(ngModel)]="showFavoritesOnly"
+            (change)="onShowFavoritesChange()"
+            class="w-4 h-4 text-red-500 border-gray-300 rounded focus:ring-2 focus:ring-red-500"
+          />
+          <span class="text-sm font-medium text-gray-700 flex items-center space-x-1">
+            <lucide-icon [img]="Heart" [size]="16" class="text-red-500"></lucide-icon>
+            <span>Show Favorites Only ({{ favoritesService.getFavoriteCount() }})</span>
+          </span>
+        </label>
+
+        @if (searchTerm || selectedBreed || selectedGender || selectedAge || showFavoritesOnly) {
+        <p class="text-sm text-gray-600">
+          Showing {{ filteredDogs.length }} of {{ dogs.length }} dogs
+        </p>
+        }
+      </div>
+
+      @if (searchTerm || selectedBreed || selectedGender || selectedAge || showFavoritesOnly) {
+      <button
+        (click)="clearFilters()"
+        class="text-sm text-[#2D6A4F] hover:text-[#1B4332] font-medium transition-colors"
+      >
+        Clear Filters
+      </button>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Dogs Grid Section -->
+<section class="py-12 bg-gray-50 min-h-screen">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Loading State -->
+    @if (isLoading) {
+    <div class="flex justify-center items-center py-20">
+      <div class="text-center">
+        <div
+          class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#2D6A4F]"
+        ></div>
+        <p class="mt-4 text-gray-600">Loading available dogs...</p>
+      </div>
+    </div>
+    }
+
+    <!-- Error State -->
+    @if (errorMessage && !isLoading) {
+    <div class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+      <p class="text-red-600">{{ errorMessage }}</p>
+      <button
+        (click)="loadDogs()"
+        class="mt-4 px-6 py-2 bg-[#2D6A4F] text-white rounded-lg hover:bg-[#1B4332] transition-colors"
+      >
+        Try Again
+      </button>
+    </div>
+    }
+
+    <!-- Empty State -->
+    @if (!isLoading && !errorMessage && filteredDogs.length === 0) {
+    <div class="text-center py-20">
+      <lucide-icon [img]="PawPrint" [size]="64" class="mx-auto text-gray-300 mb-4"></lucide-icon>
+      <h3 class="text-2xl font-bold text-gray-700 mb-2">No Dogs Found</h3>
+      <p class="text-gray-500 mb-6">Try adjusting your filters to see more results</p>
+      @if (searchTerm || selectedBreed || selectedGender || selectedAge) {
+      <button
+        (click)="clearFilters()"
+        class="px-6 py-3 bg-[#2D6A4F] text-white rounded-lg hover:bg-[#1B4332] transition-colors font-semibold"
+      >
+        Clear All Filters
+      </button>
+      }
+    </div>
+    }
+
+    <!-- Dogs Grid -->
+    @if (!isLoading && !errorMessage && filteredDogs.length > 0) {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      @for (dog of filteredDogs; track dog.id) {
+      <div
+        class="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300"
+      >
+        <!-- Dog Image -->
+        <div class="relative h-64 overflow-hidden bg-gray-200">
+          @if (dog.imageUrl) {
+          <img [src]="dog.imageUrl" [alt]="dog.name" class="w-full h-full object-cover" />
+          } @else {
+          <div
+            class="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#2D6A4F] to-[#52B788]"
+          >
+            <lucide-icon [img]="PawPrint" [size]="64" class="text-white opacity-50"></lucide-icon>
+          </div>
+          }
+          <div
+            class="absolute top-4 right-4 bg-[#40916C] text-white px-3 py-1 rounded-full text-sm font-medium shadow-lg"
+          >
+            Available
+          </div>
+        </div>
+
+        <!-- Dog Info -->
+        <div class="p-6">
+          <h3 class="text-2xl font-bold text-[#1B4332] font-['Poppins'] mb-2">{{ dog.name }}</h3>
+
+          <div class="flex flex-wrap items-center gap-3 text-sm text-gray-600 mb-4">
+            <span class="flex items-center">
+              <span class="font-medium">{{ dog.breed }}</span>
+            </span>
+            <span>•</span>
+            <span>{{ getAgeLabel(dog.age) }}</span>
+            <span>•</span>
+            <span>{{ getGenderLabel(dog.gender) }}</span>
+          </div>
+
+          <div class="mb-4">
+            <span
+              class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"
+            >
+              {{ dog.healthStatus }}
+            </span>
+          </div>
+
+          <p class="text-gray-600 mb-6 line-clamp-3">
+            {{ dog.description }}
+          </p>
+
+          <div class="flex gap-3">
+            <button
+              [routerLink]="['/dogs', dog.id]"
+              class="flex-1 px-4 py-2.5 bg-[#2D6A4F] text-white rounded-lg hover:bg-[#1B4332] transition-colors font-semibold"
+            >
+              View Details
+            </button>
+            <button
+              (click)="toggleFavorite(dog.id, $event)"
+              [class]="
+                isFavorite(dog.id)
+                  ? 'px-4 py-2.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all'
+                  : 'px-4 py-2.5 border-2 border-[#2D6A4F] text-[#2D6A4F] rounded-lg hover:bg-[#2D6A4F] hover:text-white transition-all'
+              "
+              [title]="isFavorite(dog.id) ? 'Remove from favorites' : 'Add to favorites'"
+            >
+              <lucide-icon
+                [img]="Heart"
+                [size]="20"
+                [class.filled-heart]="isFavorite(dog.id)"
+              ></lucide-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+    }
+  </div>
+</section>

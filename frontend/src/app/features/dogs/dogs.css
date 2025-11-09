@@ -1,0 +1,7 @@
+/* Dogs page custom styles */
+
+/* Filled heart icon styling */
+lucide-icon.filled-heart svg {
+  fill: currentColor;
+  stroke: currentColor;
+}
