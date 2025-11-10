@@ -194,11 +194,22 @@ export class AuthService {
    * Update user profile data in local state
    */
   updateUserProfile(updates: Partial<User>): void {
+    console.log('=== UPDATING USER PROFILE ===');
+    console.log('Updates:', updates);
+    console.log('Current user before update:', this.currentUser());
+
     const currentUserData = this.currentUser();
     if (currentUserData) {
       const updatedUser = { ...currentUserData, ...updates };
+      console.log('Updated user:', updatedUser);
+      console.log('New avatarUrl:', updatedUser.avatarUrl);
+
       this.currentUser.set(updatedUser);
       localStorage.setItem('user', JSON.stringify(updatedUser));
+
+      console.log('User profile updated in localStorage');
+    } else {
+      console.error('No current user data to update!');
     }
   }
 
