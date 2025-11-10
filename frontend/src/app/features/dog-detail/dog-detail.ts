@@ -234,6 +234,39 @@ export class DogDetail implements OnInit {
     return gender.charAt(0).toUpperCase() + gender.slice(1).toLowerCase();
   }
 
+  getDogImageUrl(): string {
+    if (!this.dog) {
+      // Return a placeholder image if no dog is loaded
+      return 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect fill=%22%232D6A4F%22 width=%22400%22 height=%22400%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2248%22 fill=%22%23ffffff%22%3ENo Image%3C/text%3E%3C/svg%3E';
+    }
+
+    // Priority 1: If dog has binary image in database, use the image endpoint
+    if (this.dog.hasImage) {
+      // Add timestamp to bust browser cache
+      const timestamp = new Date().getTime();
+      return `http://localhost:8080/api/dogs/${this.dog.id}/image?t=${timestamp}`;
+    }
+
+    // Priority 2: If imageUrl is provided
+    if (this.dog.imageUrl) {
+      // If imageUrl starts with http/https, use it directly
+      if (this.dog.imageUrl.startsWith('http')) {
+        return this.dog.imageUrl;
+      }
+
+      // If imageUrl starts with /api, strip it
+      const cleanedUrl = this.dog.imageUrl.startsWith('/api')
+        ? this.dog.imageUrl.substring(4)
+        : this.dog.imageUrl;
+
+      // Construct full URL
+      return `http://localhost:8080${cleanedUrl}`;
+    }
+
+    // Fallback: Return placeholder SVG
+    return 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect fill=%22%232D6A4F%22 width=%22400%22 height=%22400%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2248%22 fill=%22%23ffffff%22%3ENo Image%3C/text%3E%3C/svg%3E';
+  }
+
   goBack() {
     this.router.navigate(['/dogs']);
   }
