@@ -3,8 +3,11 @@
     <div class="flex justify-between items-center h-16">
       <!-- Logo & Brand -->
       <div class="flex items-center space-x-3">
-        <a routerLink="/" class="flex items-center group">
-          <img src="/logo.svg" alt="FureverHome Logo" class="h-11" />
+        <a
+          [routerLink]="isAuthenticated() && isAdmin() ? '/admin/dashboard' : '/'"
+          class="flex items-center group"
+        >
+          <img src="/logo.svg" alt="FureverHome Logo" class="h-10" />
         </a>
       </div>
 
@@ -88,10 +91,18 @@
           >
             @if (userAvatarUrl()) {
             <img
-              [src]="'http://localhost:8080' + userAvatarUrl()"
+              [src]="userAvatarUrl()"
               alt="User Avatar"
               class="h-8 w-8 rounded-full object-cover border-2 border-white"
+              (load)="onAvatarLoad($event)"
+              (error)="onAvatarError($event)"
             />
+            <div
+              class="h-8 w-8 rounded-full bg-[#52B788] hidden items-center justify-center text-white font-semibold"
+              id="avatar-fallback"
+            >
+              {{ userInitials() }}
+            </div>
             } @else {
             <div
               class="h-8 w-8 rounded-full bg-[#52B788] flex items-center justify-center text-white font-semibold"

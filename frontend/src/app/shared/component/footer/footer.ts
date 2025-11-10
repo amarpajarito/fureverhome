@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import {
@@ -11,6 +11,7 @@ import {
   Twitter,
   Instagram,
 } from 'lucide-angular';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-footer',
@@ -20,6 +21,8 @@ import {
   styleUrl: './footer.css',
 })
 export class Footer {
+  authService = inject(AuthService);
+
   // Icons
   readonly Heart = Heart;
   readonly Mail = Mail;
@@ -30,4 +33,12 @@ export class Footer {
   readonly Instagram = Instagram;
 
   currentYear = new Date().getFullYear();
+
+  isAuthenticated() {
+    return this.authService.isAuthenticated();
+  }
+
+  isAdmin() {
+    return this.authService.currentUser()?.role === 'ADMIN';
+  }
 }

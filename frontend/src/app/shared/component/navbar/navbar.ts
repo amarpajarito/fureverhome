@@ -1,4 +1,4 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, computed, OnInit, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import {
@@ -26,7 +26,7 @@ import { AuthService } from '../../../core/services/auth.service';
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
-export class Navbar {
+export class Navbar implements OnInit {
   private router = inject(Router);
   private authService = inject(AuthService);
 
@@ -57,7 +57,44 @@ export class Navbar {
   userFullName = computed(() => this.authService.getFullName());
   userEmail = computed(() => this.authService.getEmail());
   userInitials = computed(() => this.authService.getInitials());
-  userAvatarUrl = computed(() => this.authService.getAvatarUrl());
+  userAvatarUrl = computed(() => {
+    const avatarUrl = this.authService.getAvatarUrl();
+    if (!avatarUrl) return null;
+
+    console.log('Raw avatar URL from auth service:', avatarUrl);
+
+    // Add cache busting timestamp to force reload when avatar updates
+    const timestamp = new Date().getTime();
+
+    // If URL already starts with http, return as-is with timestamp
+    if (avatarUrl.startsWith('http')) {
+      return `${avatarUrl}?t=${timestamp}`;
+    }
+
+    // Ensure the URL starts with / for proper construction
+    const cleanedUrl = avatarUrl.startsWith('/') ? avatarUrl : '/' + avatarUrl;
+    const finalUrl = `http://localhost:8080${cleanedUrl}?t=${timestamp}`;
+
+    console.log('Final avatar URL:', finalUrl);
+    return finalUrl;
+  });
+
+  constructor() {
+    // Effect to log avatar URL changes
+    effect(() => {
+      const avatarUrl = this.userAvatarUrl();
+      console.log('=== NAVBAR AVATAR DEBUG ===');
+      console.log('Avatar URL:', avatarUrl);
+      console.log('User:', this.currentUser());
+      console.log('Is Authenticated:', this.isAuthenticated());
+    });
+  }
+
+  ngOnInit() {
+    console.log('Navbar initialized');
+    console.log('Current user:', this.currentUser());
+    console.log('Avatar URL:', this.userAvatarUrl());
+  }
 
   toggleMobileMenu(): void {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
@@ -73,6 +110,23 @@ export class Navbar {
 
   closeUserMenu(): void {
     this.isUserMenuOpen = false;
+  }
+
+  onAvatarLoad(event: Event): void {
+    console.log('✅ Avatar loaded successfully:', (event.target as HTMLImageElement).src);
+  }
+
+  onAvatarError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    console.error('❌ Avatar failed to load:', img.src);
+    console.error('Error event:', event);
+
+    // Hide the image and show fallback
+    img.style.display = 'none';
+    const fallback = document.getElementById('avatar-fallback');
+    if (fallback) {
+      fallback.style.display = 'flex';
+    }
   }
 
   logout(): void {
