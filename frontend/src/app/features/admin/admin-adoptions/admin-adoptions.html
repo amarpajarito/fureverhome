@@ -1,0 +1,339 @@
+<!-- Admin Header -->
+<div class="bg-gradient-to-r from-[#2D6A4F] to-[#1B4332] text-white py-8 shadow-lg">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h1 class="text-3xl md:text-4xl font-bold font-['Poppins']">Manage Adoption Requests</h1>
+    <p class="text-gray-200 mt-1">Review and process adoption applications</p>
+  </div>
+</div>
+
+<!-- Content -->
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Success Message -->
+    @if (successMessage) {
+    <div
+      class="bg-green-50 border-2 border-green-200 rounded-lg p-4 mb-6 flex items-center space-x-3"
+    >
+      <lucide-icon [img]="Check" [size]="20" class="text-green-600"></lucide-icon>
+      <p class="text-green-800 font-medium">{{ successMessage }}</p>
+    </div>
+    }
+
+    <!-- Filters -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Search -->
+        <div class="relative">
+          <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+            <lucide-icon [img]="Search" [size]="20"></lucide-icon>
+          </div>
+          <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            (input)="onSearchChange()"
+            placeholder="Search by dog name, applicant name, or email..."
+            class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D6A4F] focus:border-transparent"
+          />
+        </div>
+
+        <!-- Status Filter -->
+        <select
+          [(ngModel)]="statusFilter"
+          (change)="onStatusFilterChange()"
+          class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D6A4F] focus:border-transparent"
+        >
+          <option value="">All Statuses</option>
+          <option value="PENDING">Pending</option>
+          <option value="APPROVED">Approved</option>
+          <option value="REJECTED">Rejected</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    @if (isLoading) {
+    <div class="flex justify-center items-center py-20">
+      <div class="text-center">
+        <div
+          class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#2D6A4F]"
+        ></div>
+        <p class="mt-4 text-gray-600">Loading adoption requests...</p>
+      </div>
+    </div>
+    }
+
+    <!-- Error State -->
+    @if (errorMessage && !isLoading) {
+    <div class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+      <lucide-icon [img]="AlertCircle" [size]="48" class="mx-auto text-red-500 mb-4"></lucide-icon>
+      <p class="text-red-600 text-lg">{{ errorMessage }}</p>
+    </div>
+    }
+
+    <!-- Empty State -->
+    @if (!isLoading && !errorMessage && filteredRequests.length === 0) {
+    <div class="text-center py-20">
+      <p class="text-gray-500 text-lg">
+        {{
+          searchTerm || statusFilter
+            ? 'No adoption requests found matching your filters.'
+            : 'No
+        adoption requests yet.'
+        }}
+      </p>
+    </div>
+    }
+
+    <!-- Requests Table -->
+    @if (!isLoading && !errorMessage && filteredRequests.length > 0) {
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Dog
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Applicant
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Contact
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Status
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Submitted
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            @for (request of filteredRequests; track request.id) {
+            <tr class="hover:bg-gray-50 transition-colors">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="h-12 w-12 rounded-lg overflow-hidden bg-gray-200 mr-3">
+                    @if (request.dogImageUrl) {
+                    <img
+                      [src]="request.dogImageUrl"
+                      [alt]="request.dogName"
+                      class="h-full w-full object-cover"
+                    />
+                    }
+                  </div>
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">{{ request.dogName }}</div>
+                    <div class="text-sm text-gray-500">{{ request.dogBreed }}</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-medium text-gray-900">{{ request.fullName }}</div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="text-sm text-gray-700">{{ request.email }}</div>
+                <div class="text-sm text-gray-500">{{ request.phone }}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span
+                  class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full"
+                  [class]="getStatusClass(request.status)"
+                >
+                  {{ request.status }}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ formatDate(request.createdAt) }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <div class="flex items-center justify-end space-x-2">
+                  <button
+                    (click)="viewDetails(request)"
+                    class="text-blue-600 hover:text-blue-900 p-2 hover:bg-blue-50 rounded transition-colors"
+                    title="View Details"
+                  >
+                    <lucide-icon [img]="Eye" [size]="18"></lucide-icon>
+                  </button>
+                  @if (request.status === 'PENDING') {
+                  <button
+                    (click)="updateStatus(request.id, 'APPROVED')"
+                    class="text-green-600 hover:text-green-900 p-2 hover:bg-green-50 rounded transition-colors"
+                    title="Approve"
+                  >
+                    <lucide-icon [img]="Check" [size]="18"></lucide-icon>
+                  </button>
+                  <button
+                    (click)="updateStatus(request.id, 'REJECTED')"
+                    class="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded transition-colors"
+                    title="Reject"
+                  >
+                    <lucide-icon [img]="X" [size]="18"></lucide-icon>
+                  </button>
+                  }
+                </div>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Results Count -->
+    <div class="mt-4 text-center text-sm text-gray-600">
+      Showing {{ filteredRequests.length }} of {{ requests.length }} request(s)
+    </div>
+    }
+  </div>
+</div>
+
+<!-- Details Modal -->
+@if (showDetailsModal && selectedRequest) {
+<div
+  class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center p-4 z-50 backdrop-blur-sm"
+  (click)="closeDetailsModal()"
+>
+  <div
+    class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Modal Header -->
+    <div class="bg-[#2D6A4F] text-white p-6 rounded-t-xl flex-shrink-0">
+      <div class="flex items-center justify-between">
+        <h2 class="text-2xl font-bold">Adoption Request Details</h2>
+        <button
+          (click)="closeDetailsModal()"
+          class="text-white hover:text-gray-200 transition-colors"
+        >
+          <lucide-icon [img]="X" [size]="24"></lucide-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal Content - Scrollable -->
+    <div class="p-6 overflow-y-auto flex-1">
+      <!-- Dog Information -->
+      <div class="mb-6">
+        <h3 class="text-lg font-bold text-gray-800 mb-3">Dog Information</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <p class="text-sm text-gray-500">Name</p>
+            <p class="font-medium">{{ selectedRequest.dogName }}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Breed</p>
+            <p class="font-medium">{{ selectedRequest.dogBreed }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Applicant Information -->
+      <div class="mb-6 border-t pt-6">
+        <h3 class="text-lg font-bold text-gray-800 mb-3">Applicant Information</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <p class="text-sm text-gray-500">Full Name</p>
+            <p class="font-medium">{{ selectedRequest.fullName }}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Email</p>
+            <p class="font-medium">{{ selectedRequest.email }}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Phone</p>
+            <p class="font-medium">{{ selectedRequest.phone }}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Occupation</p>
+            <p class="font-medium">{{ selectedRequest.occupation }}</p>
+          </div>
+          <div class="md:col-span-2">
+            <p class="text-sm text-gray-500">Address</p>
+            <p class="font-medium">{{ selectedRequest.address }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Household Information -->
+      <div class="mb-6 border-t pt-6">
+        <h3 class="text-lg font-bold text-gray-800 mb-3">Household Information</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <p class="text-sm text-gray-500">Household Members</p>
+            <p class="font-medium">{{ selectedRequest.householdMembers }}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Has Other Pets</p>
+            <p class="font-medium">{{ selectedRequest.hasOtherPets ? 'Yes' : 'No' }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pet Experience -->
+      <div class="mb-6 border-t pt-6">
+        <h3 class="text-lg font-bold text-gray-800 mb-3">Pet Experience</h3>
+        <p class="text-gray-700 whitespace-pre-wrap">{{ selectedRequest.petExperience }}</p>
+      </div>
+
+      <!-- Reason for Adoption -->
+      <div class="mb-6 border-t pt-6">
+        <h3 class="text-lg font-bold text-gray-800 mb-3">Reason for Adoption</h3>
+        <p class="text-gray-700 whitespace-pre-wrap">{{ selectedRequest.reason }}</p>
+      </div>
+
+      <!-- Status & Actions -->
+      <div class="border-t pt-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 mb-2">Current Status</p>
+            <span
+              class="px-4 py-2 inline-flex text-sm font-semibold rounded-full"
+              [class]="getStatusClass(selectedRequest.status)"
+            >
+              {{ selectedRequest.status }}
+            </span>
+          </div>
+          @if (selectedRequest.status === 'PENDING') {
+          <div class="flex space-x-3">
+            <button
+              (click)="updateStatus(selectedRequest.id, 'APPROVED')"
+              class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold"
+            >
+              Approve
+            </button>
+            <button
+              (click)="updateStatus(selectedRequest.id, 'REJECTED')"
+              class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold"
+            >
+              Reject
+            </button>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+}

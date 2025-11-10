@@ -1,0 +1,199 @@
+<!-- Admin Header -->
+<div class="bg-gradient-to-r from-[#2D6A4F] to-[#1B4332] text-white py-8 shadow-lg">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h1 class="text-3xl md:text-4xl font-bold font-['Poppins'] mb-2">Admin Dashboard</h1>
+    <p class="text-gray-200">
+      Welcome back, <span class="font-semibold">{{ authService.currentUser()?.firstName }}</span>
+    </p>
+  </div>
+</div>
+
+<!-- Dashboard Content -->
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Loading State -->
+    @if (isLoading) {
+    <div class="flex justify-center items-center py-20">
+      <div class="text-center">
+        <div
+          class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#2D6A4F]"
+        ></div>
+        <p class="mt-4 text-gray-600">Loading dashboard...</p>
+      </div>
+    </div>
+    }
+
+    <!-- Error State -->
+    @if (errorMessage && !isLoading) {
+    <div class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+      <p class="text-red-600 text-lg">{{ errorMessage }}</p>
+    </div>
+    }
+
+    <!-- Stats Grid -->
+    @if (!isLoading && !errorMessage) {
+    <div class="mb-8">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">System Overview</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Total Dogs -->
+        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-[#2D6A4F]">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-600 uppercase tracking-wide font-medium">Total Dogs</p>
+              <p class="text-3xl font-bold text-gray-800 mt-2">{{ stats.totalDogs }}</p>
+            </div>
+            <div class="bg-[#2D6A4F] rounded-full p-3">
+              <lucide-icon [img]="PawPrint" [size]="32" class="text-white"></lucide-icon>
+            </div>
+          </div>
+        </div>
+
+        <!-- Available Dogs -->
+        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-600 uppercase tracking-wide font-medium">
+                Available Dogs
+              </p>
+              <p class="text-3xl font-bold text-gray-800 mt-2">{{ stats.availableDogs }}</p>
+            </div>
+            <div class="bg-green-100 rounded-full p-3">
+              <lucide-icon [img]="TrendingUp" [size]="32" class="text-green-600"></lucide-icon>
+            </div>
+          </div>
+        </div>
+
+        <!-- Adopted Dogs -->
+        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-600 uppercase tracking-wide font-medium">Adopted Dogs</p>
+              <p class="text-3xl font-bold text-gray-800 mt-2">{{ stats.adoptedDogs }}</p>
+            </div>
+            <div class="bg-blue-100 rounded-full p-3">
+              <lucide-icon [img]="Users" [size]="32" class="text-blue-600"></lucide-icon>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pending Requests -->
+        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-yellow-500">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-600 uppercase tracking-wide font-medium">
+                Pending Requests
+              </p>
+              <p class="text-3xl font-bold text-gray-800 mt-2">{{ stats.pendingRequests }}</p>
+            </div>
+            <div class="bg-yellow-100 rounded-full p-3">
+              <lucide-icon [img]="FileText" [size]="32" class="text-yellow-600"></lucide-icon>
+            </div>
+          </div>
+        </div>
+
+        <!-- Approved Requests -->
+        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-600">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-600 uppercase tracking-wide font-medium">
+                Approved Requests
+              </p>
+              <p class="text-3xl font-bold text-gray-800 mt-2">{{ stats.approvedRequests }}</p>
+            </div>
+            <div class="bg-green-100 rounded-full p-3">
+              <lucide-icon [img]="FileText" [size]="32" class="text-green-600"></lucide-icon>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rejected Requests -->
+        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-red-500">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-600 uppercase tracking-wide font-medium">
+                Rejected Requests
+              </p>
+              <p class="text-3xl font-bold text-gray-800 mt-2">{{ stats.rejectedRequests }}</p>
+            </div>
+            <div class="bg-red-100 rounded-full p-3">
+              <lucide-icon [img]="FileText" [size]="32" class="text-red-600"></lucide-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Management Sections -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Quick Actions -->
+      <div class="bg-white rounded-xl shadow-md p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Quick Actions</h2>
+        <div class="space-y-3">
+          <a
+            routerLink="/admin/dogs"
+            class="flex items-center justify-between p-4 border-2 border-gray-200 rounded-lg hover:border-[#2D6A4F] hover:bg-gray-50 transition-all group"
+          >
+            <div class="flex items-center space-x-3">
+              <div class="bg-[#2D6A4F] rounded-lg p-2 group-hover:bg-[#2D6A4F] transition-colors">
+                <lucide-icon [img]="PawPrint" [size]="20" class="text-white"></lucide-icon>
+              </div>
+              <div>
+                <h3 class="font-semibold text-gray-800">Manage Dogs</h3>
+                <p class="text-sm text-gray-600">View, edit, and manage all dogs</p>
+              </div>
+            </div>
+            <lucide-icon
+              [img]="ArrowRight"
+              [size]="20"
+              class="text-gray-400 group-hover:text-[#2D6A4F] transition-colors"
+            ></lucide-icon>
+          </a>
+
+          <a
+            routerLink="/admin/adoptions"
+            class="flex items-center justify-between p-4 border-2 border-gray-200 rounded-lg hover:border-[#2D6A4F] hover:bg-gray-50 transition-all group"
+          >
+            <div class="flex items-center space-x-3">
+              <div class="bg-yellow-100 rounded-lg p-2 group-hover:bg-yellow-200 transition-colors">
+                <lucide-icon [img]="FileText" [size]="20" class="text-yellow-600"></lucide-icon>
+              </div>
+              <div>
+                <h3 class="font-semibold text-gray-800">Review Adoptions</h3>
+                <p class="text-sm text-gray-600">Process pending adoption requests</p>
+              </div>
+            </div>
+            @if (stats.pendingRequests > 0) {
+            <span class="bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+              {{ stats.pendingRequests }}
+            </span>
+            }
+          </a>
+        </div>
+      </div>
+
+      <!-- Recent Activity Summary -->
+      <div class="bg-white rounded-xl shadow-md p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">System Status</h2>
+        <div class="space-y-4">
+          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <span class="text-gray-700 font-medium">Adoption Success Rate</span>
+            <span class="text-[#2D6A4F] font-bold text-lg">
+              {{
+                stats.totalDogs > 0 ? ((stats.adoptedDogs / stats.totalDogs) * 100).toFixed(0) : 0
+              }}%
+            </span>
+          </div>
+          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <span class="text-gray-700 font-medium">Dogs Awaiting Adoption</span>
+            <span class="text-blue-600 font-bold text-lg">{{ stats.availableDogs }}</span>
+          </div>
+          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <span class="text-gray-700 font-medium">Requests Needing Review</span>
+            <span class="text-yellow-600 font-bold text-lg">{{ stats.pendingRequests }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+</div>
