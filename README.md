@@ -2,14 +2,15 @@
   <img src="frontend/public/logo.svg" alt="FureverHome Logo" width="400"/>
 
 [![Angular](https://img.shields.io/badge/Angular-20.3.0-red)](https://angular.dev/)
-[![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.2.0-green)](https://spring.io/projects/spring-boot)
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5.7-green)](https://spring.io/projects/spring-boot)
 [![Java](https://img.shields.io/badge/Java-17-orange)](https://www.oracle.com/java/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-336791)](https://www.postgresql.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18-336791)](https://www.postgresql.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1.17-38bdf8)](https://tailwindcss.com/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 </div>
 
-FureverHome is a comprehensive dog adoption management system that connects potential adopters with rescue dogs. The platform features secure authentication with role-based access control (User/Admin), real-time dog browsing, adoption request management, favorites system, and user profile management with avatar uploads.
+FureverHome is a dog adoption management system that connects potential adopters with rescue dogs. The platform features secure authentication with role-based access control (User/Admin), real-time dog browsing, adoption request management, favorites system, and user profile management with avatar uploads.
 
 ## Table of Contents
 
@@ -29,7 +30,7 @@ FureverHome is a comprehensive dog adoption management system that connects pote
 - npm 9.0.0 or higher
 - Java 17 or higher
 - Maven 3.8.0 or higher
-- PostgreSQL 15 or higher
+- PostgreSQL 18 or higher
 - Git
 
 ## Installation
@@ -170,33 +171,43 @@ SELECT username, email, role FROM users WHERE role = 'ADMIN';
 
 **Backend Configuration**
 
-Create a `.env` file in the **backend** directory:
+Create a `.env` file in the **backend** directory from the example template:
+
+```bash
+# Copy the example file
+cd backend
+cp .env.example .env    # Linux/Mac
+# or
+copy .env.example .env  # Windows
+```
+
+Then edit `backend/.env` with your actual values:
 
 ```env
-# Server Configuration
-SERVER_PORT=8080
-CONTEXT_PATH=/api
-
 # Database Configuration
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=fureverhome
-DB_USERNAME=postgres
-DB_PASSWORD=your_postgres_password
+DB_USERNAME=your_postgres_username
+DB_PASSWORD=your_postgres_password_here
 
 # JWT Configuration
-JWT_SECRET=your-super-secret-jwt-key-minimum-256-bits-long-please-change-this
+JWT_SECRET=your-secret-jwt-key-minimum-256-bits
 JWT_EXPIRATION=86400000
+
+# Server Configuration
+SERVER_PORT=8080
+CONTEXT_PATH=/api
 
 # CORS Configuration
 CORS_ALLOWED_ORIGINS=http://localhost:4200
 
 # File Upload Settings
 MAX_FILE_SIZE=5MB
-MAX_REQUEST_SIZE=10MB
+MAX_REQUEST_SIZE=5MB
 
 # Logging Level
-LOGGING_LEVEL=INFO
+LOGGING_LEVEL=DEBUG
 ```
 
 **Frontend Configuration**
@@ -300,7 +311,7 @@ fureverhome/
 │   │   │       └── application.properties
 │   │   └── test/
 │   ├── pom.xml
-│   └── .env
+│   └── .env.example      # Sample Environment variables
 │
 ├── frontend/                # Angular frontend
 │   ├── src/
@@ -313,7 +324,7 @@ fureverhome/
 │   │   └── index.html
 │   ├── angular.json
 │   ├── package.json
-│   └── tailwind.config.js
+│   └── postcssrc.json
 │
 └── README.md
 ```
@@ -322,27 +333,27 @@ fureverhome/
 
 ### User Features
 
-- 🐕 Browse available dogs for adoption
-- ❤️ Add dogs to favorites
-- 📝 Submit adoption requests with detailed application
-- 👤 User profile management with avatar upload
-- 🔐 Secure authentication (JWT-based)
+- Browse available dogs for adoption
+- Add dogs to favorites
+- Submit adoption requests with detailed application
+- User profile management with avatar upload
+- Secure authentication (JWT-based)
 
 ### Admin Features
 
-- 🔧 Manage dogs (CRUD operations)
-- 📸 Upload dog images (stored as BYTEA in database)
-- 📋 Review and manage adoption requests (Approve/Reject)
-- 👥 View all users and adoption statistics
+- Manage dogs (CRUD operations)
+- Upload dog images (stored as BYTEA in database)
+- Review and manage adoption requests (Approve/Reject)
+- View all users and adoption statistics
 
 ### Technical Features
 
-- 🔒 Role-based access control (USER/ADMIN)
-- 🖼️ Binary image storage in PostgreSQL
-- ⚡ Cache-busting for image updates
-- 🎨 Responsive design with Tailwind CSS
-- 🔄 Real-time form validation
-- 📱 Mobile-friendly interface
+- Role-based access control (USER/ADMIN)
+- Binary image storage in PostgreSQL
+- Cache-busting for image updates
+- Responsive design with Tailwind CSS
+- Real-time form validation
+- Mobile-friendly interface
 
 ## API Endpoints
 
