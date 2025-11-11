@@ -68,8 +68,12 @@ export class AdminAdoptions implements OnInit {
     this.http.get<AdoptionRequest[]>(this.apiUrl).subscribe({
       next: (requests) => {
         console.log('Adoption requests loaded:', requests);
-        this.requests = requests;
-        this.filteredRequests = requests;
+        // Process image URLs for each request
+        this.requests = requests.map((request) => ({
+          ...request,
+          dogImageUrl: this.getImageUrl(request),
+        }));
+        this.filteredRequests = this.requests;
         this.isLoading = false;
         this.applyFilters();
       },
@@ -86,6 +90,25 @@ export class AdminAdoptions implements OnInit {
         }
       },
     });
+  }
+
+  getImageUrl(request: AdoptionRequest): string {
+    // If dogImageUrl is provided from backend
+    if (request.dogImageUrl) {
+      // If it starts with /api, prepend the base URL
+      if (request.dogImageUrl.startsWith('/api')) {
+        return `http://localhost:8080${request.dogImageUrl}`;
+      }
+      // If it's already a full URL, use it as is
+      if (request.dogImageUrl.startsWith('http')) {
+        return request.dogImageUrl;
+      }
+      // Otherwise, construct the full URL
+      return `http://localhost:8080${request.dogImageUrl}`;
+    }
+
+    // Fallback: Return placeholder
+    return '';
   }
 
   applyFilters() {

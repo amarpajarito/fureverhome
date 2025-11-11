@@ -1,11 +1,12 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { LucideAngularModule, Heart, Search, Filter, PawPrint } from 'lucide-angular';
 import { AuthService } from '../../core/services/auth.service';
 import { FavoritesService } from '../../core/services/favorites.service';
+import { filter } from 'rxjs/operators';
 
 export interface Dog {
   id: number;
@@ -33,6 +34,7 @@ export interface Dog {
 export class Dogs implements OnInit {
   private http = inject(HttpClient);
   private authService = inject(AuthService);
+  private router = inject(Router);
   favoritesService = inject(FavoritesService);
   private apiUrl = 'http://localhost:8080/api/dogs';
 
@@ -60,6 +62,16 @@ export class Dogs implements OnInit {
     this.loadDogs();
     this.loadFavorites();
     this.loadAppliedDogs();
+
+    // Reload dogs when navigating back to this page
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe((event: any) => {
+        if (event.url === '/dogs' || event.url.startsWith('/dogs?')) {
+          this.loadDogs();
+          this.loadAppliedDogs();
+        }
+      });
   }
 
   loadAppliedDogs() {

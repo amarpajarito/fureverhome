@@ -42,7 +42,14 @@ public class AdoptionResponse {
         response.setDogId(request.getDog().getId());
         response.setDogName(request.getDog().getName());
         response.setDogBreed(request.getDog().getBreed());
-        response.setDogImageUrl(request.getDog().getImageUrl());
+        
+        // Set dog image URL - prioritize binary image over imageUrl field
+        if (request.getDog().hasImage()) {
+            response.setDogImageUrl("/api/dogs/" + request.getDog().getId() + "/image");
+        } else if (request.getDog().getImageUrl() != null && !request.getDog().getImageUrl().isEmpty()) {
+            response.setDogImageUrl(request.getDog().getImageUrl());
+        }
+        
         response.setUserId(request.getUser().getId());
         response.setUsername(request.getUser().getUsername());
         response.setUserEmail(request.getUser().getEmail());
