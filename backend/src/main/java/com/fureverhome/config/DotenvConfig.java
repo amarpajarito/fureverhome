@@ -8,7 +8,7 @@ public class DotenvConfig {
         try {
             // Load .env file before Spring Boot starts
             Dotenv dotenv = Dotenv.configure()
-                    .directory("../")
+                    .directory("./")
                     .ignoreIfMissing()
                     .load();
 
